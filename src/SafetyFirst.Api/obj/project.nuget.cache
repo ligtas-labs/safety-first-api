@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "7dTe7uE5ObM=",
+  "success": true,
+  "projectFilePath": "d:\\Projects\\Github\\safety-first-api\\src\\SafetyFirst.Api\\SafetyFirst.Api.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\mjcon\\.nuget\\packages\\microsoft.aspnetcore.openapi\\10.0.14\\microsoft.aspnetcore.openapi.10.0.14.nupkg.sha512",
+    "C:\\Users\\mjcon\\.nuget\\packages\\microsoft.openapi\\2.12.2\\microsoft.openapi.2.12.2.nupkg.sha512"
+  ],
+  "logs": []
+}

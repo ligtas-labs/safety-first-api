@@ -1,0 +1,5 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/SafetyFirst.Api/SafetyFirst.Api.csproj" />
+  </Folder>
+</Solution>
