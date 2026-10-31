@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SafetyFirst.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e866ae8386525a39d5d9b425c3accf246adc93a0")]
 [assembly: System.Reflection.AssemblyProductAttribute("SafetyFirst.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SafetyFirst.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
