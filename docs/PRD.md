@@ -1,6 +1,6 @@
 # Safety First API PRD
 
-The API supports O1 and O2 by distributing reviewed versions and validating scenario evidence. It supports O3 by owning confirmed results, repeat-safe persistence and authorized classroom reads. The foundation implements database readiness and retains the template forecast route. Authentication, feature persistence and classroom contracts are backlog.
+The API supports O1 and O2 by distributing reviewed versions and validating scenario evidence. It supports O3 by owning confirmed results, repeat-safe persistence and authorized classroom reads. The foundation implements database readiness. Authentication, feature persistence and classroom contracts are backlog.
 
 ## Sources and delivery status
 

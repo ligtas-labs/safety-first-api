@@ -1,6 +1,6 @@
 # Safety First API
 
-ASP.NET Core 10 controllers provide the shared backend. The current build exposes PostgreSQL readiness and a template weather sample. Authentication, classrooms and assessment persistence are planned.
+ASP.NET Core 10 controllers provide the shared backend. The current build exposes PostgreSQL readiness. Authentication, classrooms and assessment persistence are planned.
 
 ## Local development
 
@@ -13,7 +13,7 @@ dotnet build SafetyFirst.slnx
 dotnet run --project src/SafetyFirst.Api --launch-profile http
 ```
 
-Open `http://localhost:5299/scalar/v1` or `http://localhost:5299/openapi/v1.json` in Development. Request `GET http://localhost:5299/health/ready` to check the configured database. Expect 503 without a connection and 200 when the configured PostgreSQL connection opens. Set `ConnectionStrings__DefaultConnection` via your local secret store or process environment using a disposable Neon connection. Keep the value out of source and logs. `GET /weatherforecast` is the original sample route.
+Open `http://localhost:5299/scalar/v1` or `http://localhost:5299/openapi/v1.json` in Development. Request `GET http://localhost:5299/health/ready` to check the configured database. Expect 503 without a connection and 200 when the configured PostgreSQL connection opens. Set `ConnectionStrings__DefaultConnection` via your local secret store or process environment using a disposable Neon connection. Keep the value out of source and logs.
 
 For the CI-equivalent .NET checks, run `dotnet build SafetyFirst.slnx -c Release` and `dotnet test SafetyFirst.slnx -c Release --no-build`. The foundation has no test projects. For image packaging use `docker build -t safety-first-api:local .`.
 
@@ -23,7 +23,6 @@ For the CI-equivalent .NET checks, run `dotnet build SafetyFirst.slnx -c Release
 src/SafetyFirst.Api/
   Program.cs                      # service registration and routing
   Features/Health/                # HealthController, GET /health/ready
-  Features/WeatherForecast/       # original sample controller and response model
   Properties/launchSettings.json
 deploy/                           # Compose, Caddy and release script
 docs/                             # PRD, design and deployment runbook
