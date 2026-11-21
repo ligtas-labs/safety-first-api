@@ -4,3 +4,7 @@ GET {{SafetyFirst.Api_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
+
+GET {{SafetyFirst.Api_HostAddress}}/health/ready
+
+###

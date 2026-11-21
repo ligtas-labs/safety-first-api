@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace SafetyFirst.Api.Controllers;
+namespace SafetyFirst.Api.Features.WeatherForecast;
 
 [ApiController]
 [Route("[controller]")]

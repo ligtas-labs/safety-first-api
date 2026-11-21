@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Npgsql;
 
-namespace SafetyFirst.Api.Controllers;
+namespace SafetyFirst.Api.Features.Health;
 
 [ApiController]
-public sealed class ReadinessController(IConfiguration config) : ControllerBase
+public sealed class HealthController(IConfiguration config) : ControllerBase
 {
     [HttpGet("/health/ready")]
     public async Task<IActionResult> Get(CancellationToken cancellationToken)

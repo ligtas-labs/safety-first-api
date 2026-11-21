@@ -1,4 +1,4 @@
-namespace SafetyFirst.Api;
+namespace SafetyFirst.Api.Features.WeatherForecast;
 
 public class WeatherForecast
 {
