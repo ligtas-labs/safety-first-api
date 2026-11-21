@@ -1,3 +1,7 @@
-# Safety First api contributor instructions
+# Safety First API agent instructions
 
-Read docs/development.md and the linked issue before editing. Preserve actor permissions and idempotent sync. Document contract and schema changes. Keep changes scoped, use synthetic test data, explain how to verify each criterion and report unexecuted checks. Safety content and rubric decisions require the designated human reviewer.
+Read [the PRD](docs/PRD.md), [the design](docs/DESIGN.md), [the contribution workflow](CONTRIBUTING.md), and the linked Linear ticket when one exists. Use the commands in the [README](README.md).
+
+Keep controllers and workflow-specific types under their feature. Validate route, authorized actor, denied actor and synthetic persistence behavior. Keep Program.cs focused on startup and registrations.
+
+Use synthetic fixtures. Include requirement IDs, applicable verification results and unexecuted checks in the PR. Keep credentials and participant data out of code, logs and review artifacts. Pending safety content, scoring, research and integration decisions require the appropriate owner before implementation.
