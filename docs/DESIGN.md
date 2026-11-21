@@ -1,9 +1,15 @@
-# Technical design — api
+# Safety First API technical design
 
-## Proposed implementation
+## Implemented foundation and feature layout
 
-ASP.NET Core controllers validate the request and actor. EF Core persists records in Neon PostgreSQL. Propose a unique key on learner and client attempt ID. Store the rubric version and decisions in the same transaction. On repeated IDs compare the payload before returning the original result. Reject conflicting content. Scope teacher queries by assignment and current membership.
+`Program.cs` owns service registration and controller mapping. `Features/Health/HealthController.cs` is the readiness endpoint. `Features/WeatherForecast/` retains the starter controller and model. Add controller, request/response models and workflow-specific services together in `Features/<Feature>/` when that workflow is implemented. Candidate features are Identity, Content, Attempts, Classes, Assignments and Feedback. Add shared database context and migrations under `Data/` when persistence is implemented.
+
+## Planned integration
+
+Use ASP.NET Core controllers and proposed EF Core persistence on Neon. Validate actor, membership and pinned versions before an evidence transaction. Compare a repeated attempt payload against the accepted evidence and keep teacher comments separate from results.
+
+See the [PRD](PRD.md) for stable requirement IDs, the proposed cross-app workflow and unresolved contracts. Add planned folders with their first implementation.
 
 ## Verification
 
-Repeat a request after losing its response. Expect one confirmed attempt. Submit one of two attempts and verify only that submission appears for the assigned teacher. Record endpoint, role, expected status, database fixture, and observed row count.
+Keep controllers and workflow-specific types under their feature. Validate route, authorized actor, denied actor and synthetic persistence behavior. Keep Program.cs focused on startup and registrations. See the [README](../README.md) for current commands and the [PRD](PRD.md) for acceptance checks.
