@@ -1,7 +1,6 @@
 # Safety First API agent instructions
 
-Read [the PRD](docs/PRD.md), [the design](docs/DESIGN.md), [the contribution workflow](CONTRIBUTING.md), and the linked Linear ticket when one exists. Use the commands in the [README](README.md).
-
-Keep controllers and workflow-specific types under their feature. Validate route, authorized actor, denied actor and synthetic persistence behavior. Keep Program.cs focused on startup and registrations.
-
-Use synthetic fixtures. Include requirement IDs, applicable verification results and unexecuted checks in the PR. Keep credentials and participant data out of code, logs and review artifacts. Pending safety content, scoring, research and integration decisions require the appropriate owner before implementation.
+- **Start here.** Read the task and any linked Linear issue. Use the [README](README.md) for setup, [CONTRIBUTING](CONTRIBUTING.md) for workflow, and the relevant sections of the [PRD](docs/PRD.md) or [design](docs/DESIGN.md) for behavior. Follow any more specific instructions in the directory you edit.
+- **Respect product decisions.** Use approved safety content, scoring rules and integration contracts. Surface unresolved decisions to the task owner before implementing them. Use synthetic fixtures and keep secrets and participant data out of code, prompts, logs and evidence.
+- **Keep changes local to the feature.** Keep controllers and workflow-specific types under `Features/<Feature>/` and keep startup in `Program.cs`. Verify status codes, response contracts, access decisions and persistence when affected.
+- **Verify behavior.** Start behavior changes with a failing test where supported, make it pass, then refactor. Run `dotnet build SafetyFirst.slnx -c Release`, `dotnet test SafetyFirst.slnx -c Release --no-build`. The foundation has no test projects. Check `/health/ready` with the README steps for readiness changes. Report observed results and checks left open.
