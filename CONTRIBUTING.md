@@ -2,6 +2,37 @@
 
 Start with the [README](README.md) for setup and supported commands. Use the [PRD](docs/PRD.md) and [technical design](docs/DESIGN.md) for requirements and design decisions.
 
+## Project Structure
+
+```text
+safety-first-api/
+├── .github/                              # GitHub automation and PR templates
+│   └── workflows/                        # CI and deployment workflows
+│       ├── image.yml                     # Builds and publishes the API image
+│       └── release.yml                   # Runs a manually triggered VPS release
+├── deploy/                               # VPS deployment files
+│   ├── Caddyfile                         # Reverse proxy configuration
+│   ├── compose.yaml                      # Web and API service definitions
+│   └── release.sh                        # Deploys the selected images to the VPS
+├── docs/                                 # Requirements, design, and development guides
+│   └── deployment.md                     # Release, verification, and rollback runbook
+├── src/                                  # Application source
+│   └── SafetyFirst.Api/                  # ASP.NET Core API project
+│       ├── Features/                     # Feature-owned endpoints and related code
+│       │   └── Health/                   # Database readiness feature
+│       │       └── HealthController.cs   # Handles GET /health/ready
+│       ├── Properties/                   # Local run settings
+│       │   └── launchSettings.json       # Development HTTP and HTTPS launch profiles
+│       ├── Program.cs                    # API entry point and service registration
+│       ├── SafetyFirst.Api.csproj        # Target framework and NuGet dependencies
+│       ├── SafetyFirst.Api.http          # Example HTTP requests
+│       ├── appsettings.json              # Default application configuration
+│       ├── appsettings.Development.json  # Development configuration overrides
+│       └── packages.lock.json            # Locked NuGet dependency versions
+├── Dockerfile                            # API image build
+└── SafetyFirst.slnx                      # .NET solution entry point
+```
+
 ## Ticket and branch workflow
 
 1. Pick up the Linear issue and confirm ownership, affected repos, dependencies and acceptance criteria. Use stable PRD requirement IDs where they apply.
