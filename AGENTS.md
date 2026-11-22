@@ -1,0 +1,6 @@
+# Safety First API agent instructions
+
+- **Start here.** Read the task and any linked Linear issue. Use the [README](README.md) for setup, [CONTRIBUTING](CONTRIBUTING.md) for workflow, and the relevant sections of the [PRD](docs/PRD.md) or [design](docs/DESIGN.md) for behavior. Follow any more specific instructions in the directory you edit.
+- **Respect product decisions.** Use approved safety content, scoring rules and integration contracts. Surface unresolved decisions to the task owner before implementing them. Use synthetic fixtures and keep secrets and participant data out of code, prompts, logs and evidence.
+- **Keep changes local to the feature.** Keep controllers and workflow-specific types under `Features/<Feature>/` and keep startup in `Program.cs`. Verify status codes, response contracts, access decisions and persistence when affected.
+- **Verify behavior.** Start behavior changes with a failing test where supported, make it pass, then refactor. Run `dotnet build SafetyFirst.slnx -c Release`, `dotnet test SafetyFirst.slnx -c Release --no-build`. The foundation has no test projects. Check `/health/ready` with the README steps for readiness changes. Report observed results and checks left open.
