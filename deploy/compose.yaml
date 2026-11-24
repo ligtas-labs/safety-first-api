@@ -9,6 +9,7 @@ services:
     restart: unless-stopped
     environment:
       ASPNETCORE_ENVIRONMENT: Production
+      ApiDocs__Enabled: ${API_DOCS_ENABLED:-false}
       ConnectionStrings__DefaultConnection: ${NEON_CONNECTION_STRING:?set Neon connection}
     ports:
       - "127.0.0.1:8080:8080"

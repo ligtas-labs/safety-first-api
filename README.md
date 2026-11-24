@@ -84,3 +84,20 @@ Read [CONTRIBUTING.md](CONTRIBUTING.md) for the Linear issue workflow, testing e
 [Web](https://github.com/ligtas-labs/safety-first-web) · [API](https://github.com/ligtas-labs/safety-first-api) · [Mobile](https://github.com/ligtas-labs/safety-first-mobile) · [Linear handbook](https://linear.app/ligtas-labs/document/developer-handbook-api-2efbc528f877)
 
 [Product requirements](docs/PRD.md) · [Technical design](docs/DESIGN.md) · [Contributing](CONTRIBUTING.md) · [Agent instructions](AGENTS.md)
+
+## Private API reference on the VPS
+
+The API enables Scalar and OpenAPI automatically in local Development. On the
+VPS, set `API_DOCS_ENABLED=true` in the Compose `.env` and recreate the API
+container to opt in. The checked-in Caddy configuration returns 404 for the
+Scalar and OpenAPI routes on the public API hostname.
+
+To view the docs, forward a local port over SSH to the API's loopback port on
+the VPS. Use the API port from the installed Compose file.
+
+```bash
+ssh -N -L 127.0.0.1:5299:127.0.0.1:<api-host-port> <ssh-user>@<vps-host>
+```
+
+Open `http://127.0.0.1:5299/scalar/v1` in your browser. With a custom proxy,
+apply equivalent route restrictions before enabling API docs.

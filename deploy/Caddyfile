@@ -3,4 +3,6 @@ safety-first.michaelconstantino.dev {
 }
 safety-first-api.michaelconstantino.dev {
     reverse_proxy 127.0.0.1:8080
+    @apiDocs path /scalar /scalar/* /openapi /openapi/*
+    respond @apiDocs 404
 }
