@@ -3,8 +3,29 @@ set -euo pipefail
 cd /opt/safety-first
 exec 9>.deploy.lock
 flock -x 9
-web=$1
-api=$2
+if [[ $# != 2 ]]; then
+  echo "Usage: release.sh <web-image> <api-image> or release.sh <web|api> <image>" >&2
+  exit 2
+fi
+
+case "$1" in
+  web|api)
+    if [[ ! -f current-release ]]; then
+      echo "Deploy an initial web and API image pair before updating one service." >&2
+      exit 1
+    fi
+    read -r web api < current-release
+    if [[ "$1" == web ]]; then
+      web=$2
+    else
+      api=$2
+    fi
+    ;;
+  *)
+    web=$1
+    api=$2
+    ;;
+esac
 [[ "$web" =~ ^ghcr.io/ligtas-labs/safety-first-web@sha256:[0-9a-f]{64}$ ]]
 [[ "$api" =~ ^ghcr.io/ligtas-labs/safety-first-api@sha256:[0-9a-f]{64}$ ]]
 export WEB_IMAGE="$web" API_IMAGE="$api"

@@ -12,3 +12,37 @@ Use the existing 1 vCPU / 2 GB Ubuntu VPS as a pilot. Build the web and API on G
 8. Run migrations as a separate reviewed release step once the project has migrations. Test against a Neon development branch, verify restore capability, apply only backward-compatible schema changes while the old version is serving, then deploy. Rehearse rollback by dispatching the previous known-good digest pair. An image rollback does not reverse a database change. After release check proxy/Compose logs, HTTP errors, memory, disk growth and restore access. Run `docker compose --env-file .env -f compose.yaml logs --tail 100` with the release image variables exported. Keep logs free of participant data.
 
 Official references: https://docs.docker.com/engine/install/ubuntu/ • https://caddyserver.com/docs/install • https://neon.com/docs/connect/connection-pooling • https://docs.github.com/en/actions/tutorials/publish-packages/publish-docker-images
+
+## Automatic development deployment
+
+On a successful push to `development`, GitHub builds the image, publishes
+it to GHCR, and updates the corresponding service by immutable digest.
+Pull requests build images for review. The manual main release still accepts
+a full image pair.
+
+### Set up the VPS once
+
+1. Use a VPS stack dedicated to development for automatic deployments. If
+   production shares the VPS, give it a separate Compose project, directory,
+   ports, and domains before enabling automatic deployment. The development
+   SSH command and the existing manual release both target `/opt/safety-first` on their configured hosts. Do not point the production workflow at the development stack.
+2. Install the merged Compose file, Caddy routes, and executable `release.sh`
+   from the API repository. Follow the setup above for Docker, registry
+   access, the deploy account, and the server-side Neon connection string.
+   Configure `STAGING_API_URL` in the web repository for the development API.
+3. From the VPS, run `/opt/safety-first/release.sh <web-digest-ref> <api-digest-ref>`
+   as the deploy user once, using successful **development** image references
+   from the two Container workflow summaries. This checks both services and
+   records the initial pair in `current-release`. Verify the public web URL
+   and API readiness through Caddy.
+4. In both GitHub repositories, create the `development` environment and
+   restrict it to the `development` branch if supported by your plan. Set
+   `DEPLOY_SSH_KEY` and `DEPLOY_KNOWN_HOSTS` as secrets and `VPS_HOST` as a
+   variable. Set the repository variable `DEPLOY_DEVELOPMENT` to `true` after
+   both repositories and the VPS are ready. A subsequent merge triggers
+   deployment.
+
+The VPS serializes web and API updates with the same lock. A failed readiness
+check restores the previously recorded image pair. To pause automation,
+remove the enable variable from both repositories. To roll back to a known
+good pair, run the same two-image command on the development VPS.
