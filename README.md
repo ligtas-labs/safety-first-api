@@ -85,19 +85,19 @@ Read [CONTRIBUTING.md](CONTRIBUTING.md) for the Linear issue workflow, testing e
 
 [Product requirements](docs/PRD.md) · [Technical design](docs/DESIGN.md) · [Contributing](CONTRIBUTING.md) · [Agent instructions](AGENTS.md)
 
-## Private API reference on the VPS
+## Deployed API reference
 
-The API enables Scalar and OpenAPI automatically in local Development. On the
-VPS, set `API_DOCS_ENABLED=true` in the Compose `.env` and recreate the API
-container to opt in. The checked-in Caddy configuration returns 404 for the
-Scalar and OpenAPI routes on the public API hostname.
+Scalar and OpenAPI are enabled automatically in local Development. In
+Production they are disabled by default. To publish both endpoints, install
+the updated `deploy/compose.yaml` and set `API_DOCS_ENABLED=true` in
+`/opt/safety-first/.env`. Release an API image that supports
+`ApiDocs:Enabled`, then install, validate, and reload the updated Caddy
+configuration.
 
-To view the docs, forward a local port over SSH to the API's loopback port on
-the VPS. Use the API port from the installed Compose file.
+Verify HTTP 200 from both endpoints after deployment.
 
-```bash
-ssh -N -L 127.0.0.1:5299:127.0.0.1:<api-host-port> <ssh-user>@<vps-host>
-```
+- [Scalar API reference](https://safety-first-api.michaelconstantino.dev/scalar/v1)
+- [OpenAPI document](https://safety-first-api.michaelconstantino.dev/openapi/v1.json)
 
-Open `http://127.0.0.1:5299/scalar/v1` in your browser. With a custom proxy,
-apply equivalent route restrictions before enabling API docs.
+To disable the endpoints, set `API_DOCS_ENABLED=false` and recreate the API
+container.
