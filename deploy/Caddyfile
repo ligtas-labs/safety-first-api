@@ -1,6 +1,6 @@
 safety-first.michaelconstantino.dev {
-    reverse_proxy 127.0.0.1:8180
+    reverse_proxy 127.0.0.1:3000
 }
 safety-first-api.michaelconstantino.dev {
-    reverse_proxy 127.0.0.1:8181
+    reverse_proxy 127.0.0.1:8080
 }

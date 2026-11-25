@@ -19,7 +19,7 @@ check_http() {
   done
   return 1
 }
-if ! ( "${compose[@]}" up -d && check_http http://127.0.0.1:8180/ && check_http http://127.0.0.1:8181/health/ready ); then
+if ! ( "${compose[@]}" up -d && check_http http://127.0.0.1:3000/ && check_http http://127.0.0.1:8080/health/ready ); then
   if [[ -f current-release ]]; then
     read -r WEB_IMAGE API_IMAGE <current-release
     "${compose[@]}" up -d
