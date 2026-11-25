@@ -51,7 +51,7 @@ dotnet run --project src/SafetyFirst.Api --launch-profile http
 
 Keep connection values out of source and logs. Use separate database credentials per environment. The HTTP launch profile sets the Development environment.
 
-To link a local checkout, run `neon link --no-config` and select the intended project and branch. The API can read the resulting ignored `.env.local` or `.env` file. From the repository root, use `dotnet run --project src/SafetyFirst.Api --no-launch-profile -- --postgres-version` to verify the configured runtime connection. Run `dotnet tool restore` before using `dotnet ef`.
+To link a local checkout, run `neon link --no-config` and select the intended project and branch. For manual setup, copy [`.env.example`](.env.example) to `.env.local` and fill in both URLs from Neon Console. The API reads the ignored `.env.local` or `.env` file. From the repository root, use `dotnet run --project src/SafetyFirst.Api --no-launch-profile -- --postgres-version` to verify the configured runtime connection. Run `dotnet tool restore` before using `dotnet ef`.
 
 ## Testing
 
