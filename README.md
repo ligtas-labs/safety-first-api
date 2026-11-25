@@ -84,3 +84,20 @@ Read [CONTRIBUTING.md](CONTRIBUTING.md) for the Linear issue workflow, testing e
 [Web](https://github.com/ligtas-labs/safety-first-web) · [API](https://github.com/ligtas-labs/safety-first-api) · [Mobile](https://github.com/ligtas-labs/safety-first-mobile) · [Linear handbook](https://linear.app/ligtas-labs/document/developer-handbook-api-2efbc528f877)
 
 [Product requirements](docs/PRD.md) · [Technical design](docs/DESIGN.md) · [Contributing](CONTRIBUTING.md) · [Agent instructions](AGENTS.md)
+
+## Deployed API reference
+
+Scalar and OpenAPI are enabled automatically in local Development. In
+Production they are disabled by default. To publish both endpoints, install
+the updated `deploy/compose.yaml` and set `API_DOCS_ENABLED=true` in
+`/opt/safety-first/.env`. Release an API image that supports
+`ApiDocs:Enabled`, then install, validate, and reload the updated Caddy
+configuration.
+
+Verify HTTP 200 from both endpoints after deployment.
+
+- [Scalar API reference](https://safety-first-api.michaelconstantino.dev/scalar/v1)
+- [OpenAPI document](https://safety-first-api.michaelconstantino.dev/openapi/v1.json)
+
+To disable the endpoints, set `API_DOCS_ENABLED=false` and recreate the API
+container.
