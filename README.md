@@ -96,6 +96,8 @@ curl.exe -i http://localhost:5299/health/ready
 
 Expect HTTP 503 when the database is unconfigured or unreachable and HTTP 200 when the configured test PostgreSQL database is reachable. For new behavior, follow [the test-first workflow](CONTRIBUTING.md#test-driven-development).
 
+See [xUnit starter templates](docs/testing-templates.md) for examples to copy when adding controller unit tests or HTTP integration tests.
+
 ## Repository layout
 
 | Path | Purpose |
