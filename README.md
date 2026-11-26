@@ -57,12 +57,44 @@ For schema changes, see the [EF Core migrations guide](docs/migrations.md).
 
 ## Testing
 
+Run the xUnit suite from the repository root.
+
+```sh
+dotnet test SafetyFirst.slnx
+```
+
+To verify a Release build, run:
+
 ```sh
 dotnet build SafetyFirst.slnx -c Release
 dotnet test SafetyFirst.slnx -c Release --no-build
 ```
 
-The solution includes the xUnit project `tests/SafetyFirst.Api.Tests`. Its readiness controller test runs without PostgreSQL or credentials. For an HTTP readiness smoke check, start the API and run `curl -i http://localhost:5299/health/ready`. Expect HTTP 503 with no configured connection, then restart with a reachable test PostgreSQL connection and expect HTTP 200. For new behavior, follow [the test-first workflow](CONTRIBUTING.md#test-driven-development).
+### Watch the API and tests
+
+Open two terminals in the repository root. In the first terminal, start the API with hot reload.
+
+```sh
+dotnet watch --project src/SafetyFirst.Api/SafetyFirst.Api.csproj run --launch-profile http
+```
+
+In the second terminal, start the test watcher to rerun the xUnit suite when code changes.
+
+```sh
+dotnet watch --project tests/SafetyFirst.Api.Tests/SafetyFirst.Api.Tests.csproj test
+```
+
+The readiness unit tests call the controller directly and run without an API server, PostgreSQL, or credentials. Press `Ctrl+C` in either terminal to stop its watcher.
+
+### Check the running API
+
+With the API running on the `http` launch profile, check readiness from another terminal.
+
+```powershell
+curl.exe -i http://localhost:5299/health/ready
+```
+
+Expect HTTP 503 when the database is unconfigured or unreachable and HTTP 200 when the configured test PostgreSQL database is reachable. For new behavior, follow [the test-first workflow](CONTRIBUTING.md#test-driven-development).
 
 ## Repository layout
 
