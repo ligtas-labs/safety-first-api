@@ -210,7 +210,8 @@ internal static class InitialSchema
         entity.HasOne<ScenarioVersion>().WithMany()
             .HasForeignKey(row => row.ScenarioVersionId).OnDelete(DeleteBehavior.Restrict);
         entity.HasOne<Attempt>().WithMany()
-            .HasForeignKey(row => row.RetryOfId).OnDelete(DeleteBehavior.Restrict);
+            .HasForeignKey(row => new { row.RetryOfId, row.LearnerId })
+            .HasPrincipalKey(row => new { row.Id, row.LearnerId }).OnDelete(DeleteBehavior.Restrict);
     }
 
     private static void ConfigureAttemptEvent(EntityTypeBuilder<AttemptEvent> entity)

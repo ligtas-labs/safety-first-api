@@ -226,12 +226,12 @@ namespace SafetyFirst.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RetryOfId");
-
                     b.HasIndex("ScenarioVersionId");
 
                     b.HasIndex("LearnerId", "ClientAttemptId")
                         .IsUnique();
+
+                    b.HasIndex("RetryOfId", "LearnerId");
 
                     b.ToTable("attempts", (string)null);
                 });
@@ -721,16 +721,17 @@ namespace SafetyFirst.Api.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("SafetyFirst.Api.Features.Attempts.Attempt", null)
-                        .WithMany()
-                        .HasForeignKey("RetryOfId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("SafetyFirst.Api.Features.Content.ScenarioVersion", null)
                         .WithMany()
                         .HasForeignKey("ScenarioVersionId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("SafetyFirst.Api.Features.Attempts.Attempt", null)
+                        .WithMany()
+                        .HasForeignKey("RetryOfId", "LearnerId")
+                        .HasPrincipalKey("Id", "LearnerId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("SafetyFirst.Api.Features.Attempts.AttemptEvent", b =>
