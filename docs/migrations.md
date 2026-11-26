@@ -27,6 +27,15 @@ To see exactly what SQL a single migration generates, name its predecessor and t
 dotnet ef migrations script InitialCreate AddClassrooms --output obj/AddClassrooms.sql
 ```
 
+For LIG-115, generate the SQL from the repository root and verify the expected tables, constraints, and additive operations.
+
+```powershell
+dotnet ef migrations script InitialCreate CreateInitialSchema --project src/SafetyFirst.Api --output obj/CreateInitialSchema.sql
+./scripts/Test-InitialSchema.ps1 -SqlPath obj/CreateInitialSchema.sql
+```
+
+On an isolated Neon branch, run `dotnet ef database update CreateInitialSchema` against a database at `InitialCreate` and against a separate empty database. Run `scripts/Test-InitialSchema.sql` with a PostgreSQL client on each migrated database. The fixture rolls back its synthetic records and checks the pinned scenario, grade and feedback read, cross-owner submission rejection, duplicate submission rejection, and attempt retry uniqueness.
+
 ## Push schema changes to Neon
 
 Point `DATABASE_URL_UNPOOLED` at the direct endpoint for the intended Neon branch and database. A process-level value takes precedence over the local files, so check which configuration you are using before updating. Apply the migration on the Neon `development` branch first.
