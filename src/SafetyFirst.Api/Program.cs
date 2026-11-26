@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SafetyFirst.Api.Data;
+using SafetyFirst.Api.Features.Health;
 using Scalar.AspNetCore;
 
 var printPostgresVersion = args is ["--postgres-version"];
@@ -13,6 +14,7 @@ if (string.IsNullOrWhiteSpace(connectionString))
 }
 
 builder.Services.AddDbContext<SafetyFirstDbContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddSingleton<IPostgresReadinessProbe, PostgresReadinessProbe>();
 
 // Add services to the container.
 
