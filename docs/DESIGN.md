@@ -2,7 +2,7 @@
 
 ## Implemented foundation and feature layout
 
-`Program.cs` owns service registration and controller mapping. `Features/Health/HealthController.cs` is the readiness endpoint. Add controller, request/response models and workflow-specific services together in `Features/<Feature>/` when that workflow is implemented. Candidate features are Identity, Content, Attempts, Classes, Assignments and Feedback. Add shared database context and migrations under `Data/` when persistence is implemented.
+`Program.cs` owns service registration and controller mapping. `Features/Health/HealthController.cs` is the readiness endpoint. Add controller, request/response models and workflow-specific services together in `Features/<Feature>/` when that workflow is implemented. Candidate features are Identity, Content, Attempts, Classes, Assignments and Feedback. The shared EF Core context lives under `Data/`, and migration files live under `Migrations/`. See the [migration workflow](migrations.md).
 
 ## Planned integration
 

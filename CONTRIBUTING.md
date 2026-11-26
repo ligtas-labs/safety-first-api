@@ -51,7 +51,7 @@ For new API behavior, start with a request and expected status, response contrac
 
 ## Code organization
 
-Keep a controller, request and response models, and workflow-specific services together under `src/SafetyFirst.Api/Features/<Feature>/`. Keep `Program.cs` focused on startup and dependency registration. Add shared database configuration and migrations under `Data/` when persistence lands.
+Keep a controller, request and response models, and workflow-specific services together under `src/SafetyFirst.Api/Features/<Feature>/`. Keep `Program.cs` focused on startup and dependency registration. Shared database configuration lives under `Data/`. EF Core stores migration files under `Migrations/`. See the [migration workflow](docs/migrations.md) for review and deployment steps.
 
 Use PascalCase for C# types and methods, camelCase for locals and parameters, and the `Async` suffix for async methods. Keep business rules independent of HTTP and storage details. The solution currently contains one project. If separate Domain, Application or Infrastructure projects become necessary, keep dependencies pointing inward and justify the split in the implementing change.
 
