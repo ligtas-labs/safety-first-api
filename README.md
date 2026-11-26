@@ -62,7 +62,7 @@ dotnet build SafetyFirst.slnx -c Release
 dotnet test SafetyFirst.slnx -c Release --no-build
 ```
 
-The foundation has no automated test project. The test command currently discovers no tests. For a readiness smoke check, start the API and run `curl -i http://localhost:5299/health/ready`. Expect HTTP 503 with no configured connection, then restart with a reachable test PostgreSQL connection and expect HTTP 200. For new behavior, follow [the test-first workflow](CONTRIBUTING.md#test-driven-development).
+The solution includes the xUnit project `tests/SafetyFirst.Api.Tests`. Its readiness controller test runs without PostgreSQL or credentials. For an HTTP readiness smoke check, start the API and run `curl -i http://localhost:5299/health/ready`. Expect HTTP 503 with no configured connection, then restart with a reachable test PostgreSQL connection and expect HTTP 200. For new behavior, follow [the test-first workflow](CONTRIBUTING.md#test-driven-development).
 
 ## Repository layout
 
