@@ -39,6 +39,8 @@ For the success case, supply a synthetic connection string with `AddInMemoryColl
 
 ## HTTP integration test
 
+The checked-in [readiness endpoint tests](../tests/SafetyFirst.Api.Tests/ReadinessEndpointTests.cs) show how to exercise the real API pipeline in memory. To run them with a disposable database, follow the [PostgreSQL test setup](../README.md#run-readiness-tests-with-disposable-postgresql).
+
 Use this pattern to test a real request against two explicitly started test API instances. The first runs without database configuration. The second connects to disposable PostgreSQL. The example is opt-in so the ordinary test suite can run without Docker.
 
 ```csharp

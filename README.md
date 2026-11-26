@@ -84,7 +84,40 @@ In the second terminal, start the test watcher to rerun the xUnit suite when cod
 dotnet watch --project tests/SafetyFirst.Api.Tests/SafetyFirst.Api.Tests.csproj test
 ```
 
-The readiness unit tests call the controller directly and run without an API server, PostgreSQL, or credentials. Press `Ctrl+C` in either terminal to stop its watcher.
+The readiness unit tests and the HTTP `503` test run without a separate API server or PostgreSQL. Press `Ctrl+C` in either terminal to stop its watcher.
+
+### Run readiness tests with disposable PostgreSQL
+
+The default suite reports the PostgreSQL-backed `200` case as skipped. To run it, start Docker in Linux container mode and paste this PowerShell block from the repository root. It creates a fresh PostgreSQL 16 container on a dynamic loopback port and removes it when the suite finishes.
+
+```powershell
+$container = docker run --rm -d -p '127.0.0.1::5432' -e POSTGRES_DB=safetyfirst_test -e POSTGRES_USER=safetyfirst_test -e POSTGRES_PASSWORD=safetyfirst_test postgres:16
+if ($LASTEXITCODE -ne 0) { throw 'Could not start test PostgreSQL.' }
+
+$previousPort = $env:SAFETYFIRST_TEST_POSTGRES_PORT
+try {
+    $deadline = (Get-Date).AddSeconds(30)
+    do {
+        docker exec $container pg_isready -h 127.0.0.1 -U safetyfirst_test -d safetyfirst_test | Out-Null
+        if ($LASTEXITCODE -eq 0) { break }
+        if ((Get-Date) -ge $deadline) { throw 'Test PostgreSQL did not become ready.' }
+        Start-Sleep -Seconds 1
+    } while ($true)
+
+    $binding = docker port $container 5432/tcp
+    if ($LASTEXITCODE -ne 0 -or $binding -notmatch '^127\.0\.0\.1:(\d+)$') {
+        throw 'Could not determine the test PostgreSQL port.'
+    }
+    $env:SAFETYFIRST_TEST_POSTGRES_PORT = $Matches[1]
+    dotnet test SafetyFirst.slnx
+    if ($LASTEXITCODE -ne 0) { throw 'The test suite failed.' }
+} finally {
+    $env:SAFETYFIRST_TEST_POSTGRES_PORT = $previousPort
+    docker stop $container | Out-Null
+}
+```
+
+The HTTP tests start an in-memory ASP.NET Core host with isolated configuration. The PostgreSQL test uses only the explicit loopback port and fixed synthetic database credentials. It opens a connection without creating or modifying data.
 
 ### Check the running API
 

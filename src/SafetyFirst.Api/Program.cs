@@ -6,23 +6,12 @@ using Scalar.AspNetCore;
 var printPostgresVersion = args is ["--postgres-version"];
 var builder = WebApplication.CreateBuilder(printPostgresVersion ? [] : args);
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-if (string.IsNullOrWhiteSpace(connectionString))
+if (string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("DefaultConnection")))
 {
-    connectionString = NeonConnection.Read("DATABASE_URL");
-    builder.Configuration["ConnectionStrings:DefaultConnection"] = connectionString;
+    builder.Configuration["ConnectionStrings:DefaultConnection"] = NeonConnection.Read("DATABASE_URL");
 }
 
-builder.Services.AddDbContext<SafetyFirstDbContext>(options => options.UseNpgsql(connectionString));
-builder.Services.AddSingleton<IPostgresReadinessProbe, PostgresReadinessProbe>();
-
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
-
-var app = builder.Build();
+var app = BuildApplication(builder);
 
 if (printPostgresVersion)
 {
@@ -34,17 +23,28 @@ if (printPostgresVersion)
     return;
 }
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("ApiDocs:Enabled"))
-{
-    app.MapOpenApi();
-    app.MapScalarApiReference();
-}
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
 app.Run();
+
+public partial class Program
+{
+    public static WebApplication BuildApplication(WebApplicationBuilder builder)
+    {
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+        builder.Services.AddDbContext<SafetyFirstDbContext>(options => options.UseNpgsql(connectionString));
+        builder.Services.AddSingleton<IPostgresReadinessProbe, PostgresReadinessProbe>();
+        builder.Services.AddControllers();
+        builder.Services.AddOpenApi();
+
+        var app = builder.Build();
+        if (app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("ApiDocs:Enabled"))
+        {
+            app.MapOpenApi();
+            app.MapScalarApiReference();
+        }
+
+        app.UseHttpsRedirection();
+        app.UseAuthorization();
+        app.MapControllers();
+        return app;
+    }
+}
