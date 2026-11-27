@@ -47,7 +47,7 @@ safety-first-api/
 2. **Green**. Make the smallest implementation that passes. Run the same test again.
 3. **Refactor**. Clean up with the test green, then run the relevant suite and [repository checks](README.md#testing). Repeat for the next criterion.
 
-For new API behavior, start with a request and expected status, response contract and side effect. Cover allowed and denied actors for protected routes and use an isolated test PostgreSQL instance for persistence and retry checks. The current solution has no automated test project. Add the relevant test project to `SafetyFirst.slnx` with the first behavior that needs it and report the number of tests executed. See the [readiness smoke check](README.md#testing) for the current foundation. For docs, visual or device checks, record the environment, steps, expected result and observed result. Use synthetic fixtures. Record failures and any checks still pending.
+For new API behavior, start with a request and expected status, response contract and side effect. Cover allowed and denied actors for protected routes and use an isolated test PostgreSQL instance for persistence and retry checks. Add API tests to the xUnit project in `tests/SafetyFirst.Api.Tests` and report the number of tests executed. See the [test commands and readiness smoke check](README.md#testing). For docs, visual or device checks, record the environment, steps, expected result and observed result. Use synthetic fixtures. Record failures and any checks still pending.
 
 ## Code organization
 

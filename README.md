@@ -57,12 +57,79 @@ For schema changes, see the [EF Core migrations guide](docs/migrations.md).
 
 ## Testing
 
+Run the xUnit suite from the repository root.
+
+```sh
+dotnet test SafetyFirst.slnx
+```
+
+To verify a Release build, run:
+
 ```sh
 dotnet build SafetyFirst.slnx -c Release
 dotnet test SafetyFirst.slnx -c Release --no-build
 ```
 
-The foundation has no automated test project. The test command currently discovers no tests. For a readiness smoke check, start the API and run `curl -i http://localhost:5299/health/ready`. Expect HTTP 503 with no configured connection, then restart with a reachable test PostgreSQL connection and expect HTTP 200. For new behavior, follow [the test-first workflow](CONTRIBUTING.md#test-driven-development).
+### Watch the API and tests
+
+Open two terminals in the repository root. In the first terminal, start the API with hot reload.
+
+```sh
+dotnet watch --project src/SafetyFirst.Api/SafetyFirst.Api.csproj run --launch-profile http
+```
+
+In the second terminal, start the test watcher to rerun the xUnit suite when code changes.
+
+```sh
+dotnet watch --project tests/SafetyFirst.Api.Tests/SafetyFirst.Api.Tests.csproj test
+```
+
+The readiness unit tests and the HTTP `503` test run without a separate API server or PostgreSQL. Press `Ctrl+C` in either terminal to stop its watcher.
+
+### Run readiness tests with disposable PostgreSQL
+
+The default suite reports the PostgreSQL-backed `200` case as skipped. To run it, start Docker in Linux container mode and paste this PowerShell block from the repository root. It creates a fresh PostgreSQL 16 container on a dynamic loopback port and removes it when the suite finishes.
+
+```powershell
+$container = docker run --rm -d -p '127.0.0.1::5432' -e POSTGRES_DB=safetyfirst_test -e POSTGRES_USER=safetyfirst_test -e POSTGRES_PASSWORD=safetyfirst_test postgres:16
+if ($LASTEXITCODE -ne 0) { throw 'Could not start test PostgreSQL.' }
+
+$previousPort = $env:SAFETYFIRST_TEST_POSTGRES_PORT
+try {
+    $deadline = (Get-Date).AddSeconds(30)
+    do {
+        docker exec $container pg_isready -h 127.0.0.1 -U safetyfirst_test -d safetyfirst_test | Out-Null
+        if ($LASTEXITCODE -eq 0) { break }
+        if ((Get-Date) -ge $deadline) { throw 'Test PostgreSQL did not become ready.' }
+        Start-Sleep -Seconds 1
+    } while ($true)
+
+    $binding = docker port $container 5432/tcp
+    if ($LASTEXITCODE -ne 0 -or $binding -notmatch '^127\.0\.0\.1:(\d+)$') {
+        throw 'Could not determine the test PostgreSQL port.'
+    }
+    $env:SAFETYFIRST_TEST_POSTGRES_PORT = $Matches[1]
+    dotnet test SafetyFirst.slnx
+    if ($LASTEXITCODE -ne 0) { throw 'The test suite failed.' }
+} finally {
+    $env:SAFETYFIRST_TEST_POSTGRES_PORT = $previousPort
+    docker stop $container | Out-Null
+}
+```
+
+The HTTP tests start an in-memory ASP.NET Core host with isolated configuration. The PostgreSQL test uses only the explicit loopback port and fixed synthetic database credentials. It opens a connection without creating or modifying data.
+
+### Check the running API
+
+With the API running on the `http` launch profile, check readiness from another terminal.
+
+```powershell
+curl.exe -i http://localhost:5299/health/ready
+```
+
+Expect HTTP 503 when the database is unconfigured or unreachable and HTTP 200 when the configured test PostgreSQL database is reachable. For new behavior, follow [the test-first workflow](CONTRIBUTING.md#test-driven-development).
+
+See [xUnit starter templates](docs/testing-templates.md) for examples to copy when adding controller unit tests or HTTP integration tests.
 
 ## Repository layout
 

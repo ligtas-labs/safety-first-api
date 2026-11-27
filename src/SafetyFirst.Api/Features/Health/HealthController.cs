@@ -4,7 +4,7 @@ using Npgsql;
 namespace SafetyFirst.Api.Features.Health;
 
 [ApiController]
-public sealed class HealthController(IConfiguration config) : ControllerBase
+public sealed class HealthController(IConfiguration config, IPostgresReadinessProbe probe) : ControllerBase
 {
     [HttpGet("/health/ready")]
     public async Task<IActionResult> Get(CancellationToken cancellationToken)
@@ -13,8 +13,7 @@ public sealed class HealthController(IConfiguration config) : ControllerBase
         if (string.IsNullOrWhiteSpace(connectionString)) return StatusCode(503);
         try
         {
-            await using var connection = new NpgsqlConnection(connectionString);
-            await connection.OpenAsync(cancellationToken);
+            await probe.OpenAsync(connectionString, cancellationToken);
             return Ok();
         }
         catch (NpgsqlException) { return StatusCode(503); }

@@ -3,6 +3,7 @@ WORKDIR /src
 
 COPY SafetyFirst.slnx ./
 COPY src/SafetyFirst.Api/SafetyFirst.Api.csproj src/SafetyFirst.Api/packages.lock.json ./src/SafetyFirst.Api/
+COPY tests/SafetyFirst.Api.Tests/SafetyFirst.Api.Tests.csproj tests/SafetyFirst.Api.Tests/packages.lock.json ./tests/SafetyFirst.Api.Tests/
 RUN dotnet restore SafetyFirst.slnx --locked-mode
 
 COPY . .
