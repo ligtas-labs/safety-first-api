@@ -1,6 +1,5 @@
 @SafetyFirst.Api_HostAddress = http://localhost:5299
 
-GET {{SafetyFirst.Api_HostAddress}}/weatherforecast/
-Accept: application/json
+GET {{SafetyFirst.Api_HostAddress}}/health/ready
 
 ###

@@ -1,0 +1,35 @@
+name: Deploy sprint release
+on:
+  workflow_dispatch:
+    inputs:
+      web:
+        description: Tested web image including @sha256 digest
+        required: true
+      api:
+        description: Tested API image including @sha256 digest
+        required: true
+permissions: {}
+jobs:
+  release:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    concurrency: safety-first-production
+    steps:
+      - name: Deploy the selected pair
+        env:
+          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          SSH_HOST_KEY: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+          VPS_HOST: ${{ vars.VPS_HOST }}
+          WEB_IMAGE: ${{ inputs.web }}
+          API_IMAGE: ${{ inputs.api }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$WEB_IMAGE" =~ ^ghcr.io/ligtas-labs/safety-first-web@sha256:[0-9a-f]{64}$ ]]
+          [[ "$API_IMAGE" =~ ^ghcr.io/ligtas-labs/safety-first-api@sha256:[0-9a-f]{64}$ ]]
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/release
+          chmod 600 ~/.ssh/release
+          printf '%s\n' "$SSH_HOST_KEY" > ~/.ssh/known_hosts
+          ssh -i ~/.ssh/release -o BatchMode=yes -o StrictHostKeyChecking=yes "deploy@$VPS_HOST" "/opt/safety-first/release.sh '$WEB_IMAGE' '$API_IMAGE'"

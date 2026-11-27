@@ -1,26 +1,50 @@
+using Microsoft.EntityFrameworkCore;
+using SafetyFirst.Api.Data;
+using SafetyFirst.Api.Features.Health;
 using Scalar.AspNetCore;
 
-var builder = WebApplication.CreateBuilder(args);
+var printPostgresVersion = args is ["--postgres-version"];
+var builder = WebApplication.CreateBuilder(printPostgresVersion ? [] : args);
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("DefaultConnection")))
 {
-    app.MapOpenApi();
-    app.MapScalarApiReference();
+    builder.Configuration["ConnectionStrings:DefaultConnection"] = NeonConnection.Read("DATABASE_URL");
 }
 
-app.UseHttpsRedirection();
+var app = BuildApplication(builder);
 
-app.UseAuthorization();
-
-app.MapControllers();
+if (printPostgresVersion)
+{
+    await using var host = app;
+    await using var scope = app.Services.CreateAsyncScope();
+    var db = scope.ServiceProvider.GetRequiredService<SafetyFirstDbContext>();
+    var version = await db.Database.SqlQueryRaw<string>("SELECT version() AS \"Value\"").SingleAsync();
+    Console.WriteLine($"Postgres version: {version}");
+    return;
+}
 
 app.Run();
+
+public partial class Program
+{
+    public static WebApplication BuildApplication(WebApplicationBuilder builder)
+    {
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+        builder.Services.AddDbContext<SafetyFirstDbContext>(options => options.UseNpgsql(connectionString));
+        builder.Services.AddSingleton<IPostgresReadinessProbe, PostgresReadinessProbe>();
+        builder.Services.AddControllers();
+        builder.Services.AddOpenApi();
+
+        var app = builder.Build();
+        if (app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("ApiDocs:Enabled"))
+        {
+            app.MapOpenApi();
+            app.MapScalarApiReference();
+        }
+
+        app.UseHttpsRedirection();
+        app.UseAuthorization();
+        app.MapControllers();
+        return app;
+    }
+}

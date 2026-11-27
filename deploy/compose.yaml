@@ -1,0 +1,15 @@
+services:
+  web:
+    image: ${WEB_IMAGE:?set immutable web image}
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:8080"
+  api:
+    image: ${API_IMAGE:?set immutable api image}
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ApiDocs__Enabled: ${API_DOCS_ENABLED:-false}
+      ConnectionStrings__DefaultConnection: ${NEON_CONNECTION_STRING:?set Neon connection}
+    ports:
+      - "127.0.0.1:8080:8080"
