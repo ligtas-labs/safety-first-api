@@ -10,6 +10,12 @@ Use ASP.NET Core controllers and proposed EF Core persistence on Neon. Validate 
 
 See the [PRD](PRD.md) for stable requirement IDs, the proposed cross-app workflow and unresolved contracts. Add planned folders with their first implementation.
 
+## Account integration
+
+Validate the agreed environment-specific Neon credential and resolve its subject to the existing stable Safety First UUID. An authenticated but unprovisioned identity must receive an explicit onboarding state. Eligible student activation must be idempotent under retries and concurrent requests. Operational teacher provisioning and role enforcement stay server-owned. Verify collisions, role escalation, token rejection, and identity consistency across clients against disposable PostgreSQL.
+
+See [Linear delivery scope](PRD.md#linear-delivery-scope) for dependencies and verification.
+
 ## Verification
 
 Keep controllers and workflow-specific types under their feature. Validate route, authorized actor, denied actor and synthetic persistence behavior. Keep Program.cs focused on startup and registrations. See the [README](../README.md) for current commands and the [PRD](PRD.md) for acceptance checks.
